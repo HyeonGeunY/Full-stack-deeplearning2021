@@ -67,9 +67,9 @@ class BaseDataModule(pl.LightningDataModule):
     @classmethod # 모든 클래스에 적용되는 매소드
     def data_dirname(cls):
         # Path : 파일경로 객체로 다루는 라이브러리, 문자열을 사용하는 os.path 모듈보다 편리, resolve() : 상대경로를 절대 경로로 변환
-        # resolve_to() 절대 경로를 상대 경로로 변환
-        # parents[] 상위 경로로 이동 [] 0 현재 디렉토리 1~ 한칸 상위
-        return Path(__file__).resolve().parents[3] / "data" # 3칸 상위 디렉토리로 이동 __file__ 현재 코드가 담겨있는 파일의 위치
+        # relative_to() 절대 경로를 상대 경로로 변환
+        # parents[] 상위 경로로 이동 [] 0~ 한칸 상위
+        return Path(__file__).resolve().parents[3] / "data" # 4칸 상위 디렉토리로 이동 __file__ 현재 코드가 담겨있는 파일의 위치
     
     @staticmethod
     def add_to_argparse(parser):
@@ -91,15 +91,14 @@ class BaseDataModule(pl.LightningDataModule):
 
     def prepare_data(self, *args, **kwargs) -> None:
         """
-        Use this method to do things 
-        
+        Use this method to do things that might write to disk or that need to be done only from a single GPU
+        in distributed settings (so don't set state `self.x = y`).
         """
     def setup(self, stage: Optional[str] = None) -> None:
         """
         Split into train, val, test, and set dims.
         Should assign `torch Dataset` objects to self.data_train, self.data_val, and optionally self.data_test.
         """
-        
         
     def train_dataloader(self):
         return DataLoader(
