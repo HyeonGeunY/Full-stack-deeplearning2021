@@ -23,7 +23,8 @@ urllib.request.install_opener(opener)
 class MNIST(BaseDataModule):
     """
     Mnist DataModule.
-    
+    base_data_module.py에 pl.LightningDataModule를 상속한 BaseDataModule 클래스를 만들고
+    BaseDataModule를 상속하여 MNIST클래스를 만든다.
     """
     
     def __init__(self, args: argparse.Namespace) -> None:
