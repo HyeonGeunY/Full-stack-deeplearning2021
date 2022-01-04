@@ -112,7 +112,7 @@ class BaseDataModule(pl.LightningDataModule):
     def val_dataloader(self):
         return DataLoader(
             self.data_val,
-            shuffle=True,
+            shuffle=False,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             pin_memory=self.on_gpu
@@ -121,7 +121,7 @@ class BaseDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             self.data_test,
-            shuffle=True,
+            shuffle=False,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             pin_memory=self.on_gpu

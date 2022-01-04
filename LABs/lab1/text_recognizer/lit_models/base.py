@@ -1,6 +1,7 @@
 import argparse
 import pytorch_lightning as pl
 import torch
+import torchmetrics
 
 OPTIMIZER = "Adam"
 LR = 1e-3
@@ -8,12 +9,12 @@ LOSS = "cross_entropy"
 ONE_CYCLE_TOTAL_STEPS = 100
 
 
-class Accuracy(pl.metrics.Accuracy):
+class Accuracy(torchmetrics.Accuracy):
     """
     Accuracy metrics with a hack
     """
 
-    def update(self, preds: torch.Torch, target: torch.Tensor) -> None:
+    def update(self, preds: torch.Tensor, target: torch.Tensor) -> None:
         """
         pytorchlightning 1.2+ 기준 probability 값이 0~1 범위를 벗어나는 버그 존재
 
@@ -26,26 +27,28 @@ class Accuracy(pl.metrics.Accuracy):
         super().update(preds=preds, target=target)
 
 
-class BaseLitModel(pl.lightningModule):
+class BaseLitModel(pl.LightningModule):
     """
     파이토치 모듈로 initialized 되는 일반벅인 pytorch-lightning class
     """
 
-    def __init__(self, model, args: argparse.Namespace=None):
+    def __init__(self, model, args: argparse.Namespace = None):
         super().__init__()
-        self.model = model # 모델을 받음
+        self.model = model  # 모델을 받음
         self.args = vars(args) if args is not None else {}
 
         optimizer = self.args.get("optimizer", OPTIMIZER)
         # getattr(object, name[, default]), object에서 "name" attribute를 가져온다. 값이 없을 경우 default값을 가져온다.
-        self.optimizer_class = getattr(torch.optim, optimizer) # torch.optim에서 optimzer attribute을 가져온다.
+        self.optimizer_class = getattr(
+            torch.optim, optimizer
+        )  # torch.optim에서 optimzer attribute을 가져온다.
 
         self.lr = self.args.get("lr", LR)
 
         loss = self.args.get("loss", LOSS)
         if loss not in ("ctc", "transformer"):
             self.loss_fn = getattr(torch.nn.functional, loss)
-        
+
         self.one_cycle_max_lr = self.args.get("one_cycle_max_lr", None)
         self.one_cycle_total_steps = self.args.get("one_cycle_total_steps", ONE_CYCLE_TOTAL_STEPS)
 
@@ -66,7 +69,7 @@ class BaseLitModel(pl.lightningModule):
 
         return parser
 
-    def contigure_optimizer(self):
+    def configure_optimizers(self):
         """
         설정 값으로 optimizer를 구성하여 반환
 
@@ -78,27 +81,25 @@ class BaseLitModel(pl.lightningModule):
         else
             optimizer
         """
-        optimizer = self.optimzer_class(self.parameters(), lr=self.lr)
+        optimizer = self.optimizer_class(self.parameters(), lr=self.lr)
         if self.one_cycle_max_lr is None:
             # one_cycle 정책을 사용하지 않는다면 고정된 lr을 갖는 optimizer 반환
             return optimizer
-        
-        schedular = torch.optim.lr_scheduler.OnecycleLR( 
 
-        optimizer=optimizer,
-        max_lr=self.one_cycle_max_lr,
-        total_steps=self.one_cycle_total_steps,
+        schedular = torch.optim.lr_scheduler.OnecycleLR(
+            optimizer=optimizer,
+            max_lr=self.one_cycle_max_lr,
+            total_steps=self.one_cycle_total_steps,
         )
 
         return {"optimizer": optimizer, "lr_scheduler": schedular, "monitor": "val_loss"}
 
-
-    def forward():
+    def forward(self, x):
         return self.model(x)
 
     def training_step(self, batch, batch_idx):
         x, y = batch
-        logits = self(x)
+        logits = self(x) # forward 매소드 호출
         loss = self.loss_fn(logits, y)
         self.log("train_loss", loss)
         self.train_acc(logits, y)
@@ -118,13 +119,4 @@ class BaseLitModel(pl.lightningModule):
         x, y = batch
         logits = self(x)
         self.test_acc(logits, y)
-        self.log("test_acc", self.test_acc, on_steps=False, on_epoch=True)
-
-
-
-
-
-
-
-
-
+        self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)

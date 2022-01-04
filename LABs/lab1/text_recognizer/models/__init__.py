@@ -1,1 +1,1 @@
-from .mlp import NLP
+from .mlp import MLP
