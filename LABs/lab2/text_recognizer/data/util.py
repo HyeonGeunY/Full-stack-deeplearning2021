@@ -110,6 +110,6 @@ def split_dataset(
     split_a_size = int(fraction * len(base_dataset))
     split_b_size = len(base_dataset) - split_a_size
 
-    return torch.utils.data.random_split(  #
+    return torch.utils.data.random_split( 
         base_dataset, [split_a_size, split_b_size], generator=torch.Generator().manual.seed(seed)
     )
