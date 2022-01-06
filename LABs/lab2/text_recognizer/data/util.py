@@ -1,11 +1,9 @@
 """Base Dataset class."""
-# %%
+
 from typing import Any, Callable, Dict, Sequence, Tuple, Union
 import torch
 
-# %%
 SequeneOrTensor = Union[Sequence, torch.Tensor]
-# %%
 class BaseDataset(torch.utils.data.Dataset):
     """
     Parameters
