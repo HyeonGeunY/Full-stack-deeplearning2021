@@ -108,13 +108,18 @@ class EMNISTLines(BaseDataModule):
         data = (
             f"Train/val/test sizes: {len(self.data_train)}, {len(self.data_val)}, {len(self.data_val)}\n"
             f"Batch x stats: {(x.shape, x.dtype, x.min(), x.mean(), x.std(), x.max())}\n"
-            f"Batch y stats: {(y.shape, y.dtype, y.min(), y.mean(), y.std(), y.max())}"
-             
+            f"Batch y stats: {(y.shape, y.dtype, y.min(), y.mean(), y.std(), y.max())}\n"
         )
         
         return basic + data
     
-    def _generate_data(self, split: str)
+    def _generate_data(self, split: str) -> None:
+        print(f"EMNINSTLinesDataset generating data for {split}...")
+        
+        from text_recognizer.data.sentence_generator import SentenceGenerator
+        
+        
+        
             
             
             

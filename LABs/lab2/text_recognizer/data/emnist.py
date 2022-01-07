@@ -1,7 +1,6 @@
 """
 EMNIST dataset. Downloads from NIST website and saves as .npz file if not already present
 """
-
 from pathlib import Path
 from typing import Sequence
 import json
@@ -29,7 +28,7 @@ RAW_DATA_DIRNAME = BaseDataModule.data_dirname() / "raw" / "emnist"
 METADATA_FILENAME = RAW_DATA_DIRNAME / "metadata.toml"
 DL_DATA_DIRNAME = BaseDataModule.data_dirname() / "downloaded" / "emnist"
 PROCESSED_DATA_DIRNAME = BaseDataModule.data_dirname() / "processed" / "emnist"
-PROCESSED_DATA_FILENAME = BaseDataModule.data_dirname() / "byclass.h5"
+PROCESSED_DATA_FILENAME = PROCESSED_DATA_DIRNAME / "byclass.h5"
 ESSENTIALS_FILENAME = Path(__file__).parents[0].resolve() / "emnist_essentials.json"
 
 
