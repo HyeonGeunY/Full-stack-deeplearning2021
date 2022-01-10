@@ -1,7 +1,8 @@
 from typing import Dict, Sequence
+from typing_extensions import Concatenate
 from LABs.lab2.text_recognizer.data.base_data_module import BaseDataModule
 from LABs.lab2.text_recognizer.data.emnist import ESSENTIALS_FILENAME
-from collecitons import defaultdict
+from collections import defaultdict
 from pathlib import Path
 import argparse
 
@@ -54,7 +55,7 @@ class EMNISTLines(BaseDataModule):
         BaseDataModule.add_to_argparse(parser)
         parser.add_argument("--max_length", type=int, default=MAX_LENGTH, help="Max line length in characters.")
         parser.add_argument("--min_overlap", type=float, default=MIN_OVERLAP, help="Min overlap between characters in a line, between 0 and 1")
-        parser.add_argument("--max_overlap", type=float, default=MAX_OVERLAP, help="Min overlap between characters in a line, between 0 and 1")
+        parser.add_argument("--max_overlap", type=float, default=MAX_OVERLAP, help="Max overlap between characters in a line, between 0 and 1")
         parser.add_argument("--with_start_end_tokens", acition="store_true", default=False)
         return parser # parser를 반환하는 이유?
     
@@ -118,14 +119,87 @@ class EMNISTLines(BaseDataModule):
         
         from text_recognizer.data.sentence_generator import SentenceGenerator
         
+        sentence_generator = SentenceGenerator(self.max_length - 2) # start와 end token을 추가할 것이므로 max_length에서 2개를 제거한다.
+        
+        emnist= self.emnist
+        emnist.prepare_data()
+        emnist.setup()
         
         
+        # 각 문자열에 해당하는 이미지들을 딕셔너리에 저장
+        if split == "train":
+            samples_by_char = get_samples_by_char(emnist.x_trainval, emnist.y_trainval, emnist.mapping) 
+            num = self.num_train
+        elif split == "val":
+            samples_by_char = get_samples_by_char(emnist.x_trainval, emnist.y_trainval, emnist.mapping)
+            num = self.num_val
+        else:
+            samples_by_char = get_samples_by_char(emnist.x_test, emnist.y_test, emnist.mapping)
+            num = self.num_test
             
-            
-            
-            
-        
-        
-        
+        DATA_DIRNAME.mkdir(parents=True, exist_ok=True)
+        with h5py.File(self.data_filename, "a") as f:
+            x, y = create_dataset_of_images(num, samples_by_char, sentence_generator, self.min_overlap, self.max_overlap, self.dims)
             
         
+def get_samples_by_char(samples, labels, mapping):
+    samples_by_char = defaultdict(list)
+    for sample, label in zip(samples, labels):
+        samples_by_char[mapping[label]].append(sample)
+    return samples_by_char
+
+        
+def create_dataset_of_images(N, samples_by_char, sentence_generator, min_overlap, max_overlap, dims):
+    """
+    N : 데이터 개수
+    samples : Dict[key, images]
+        key 문자에 해당하는 여러 image가 들어있음.
+        
+    """
+    images = torch.zeros((N, dims[1], dims[2]))
+    labels = []
+    for n in range(N):
+        label = sentence_generator.generate()
+        images[n] = construct_image_from_string(label, samples_by_char, min_overlap, max_overlap, dims[-1])
+        
+    
+def construct_image_from_string(string: str, samples_by_char: dict, min_overlap: float, max_overlap: float, width: int) -> torch.Tensor:
+    
+    overlap = np.random.uniform(min_overlap, max_overlap)
+    sampled_images = select_letter_samples_for_string(string, samples_by_char)
+    H, W = sampled_images[0].shape
+    next_overlap_width = W - int((overlap * W))
+    concatenated_image= torch.zeros((H, width), dtype=torch.uint8)
+    x = 0
+    for image in sampled_images:
+        concatenated_image[:, x:(x + W)] += image
+        x += next_overlap_width
+    return torch.minimum(torch.Tensor([255]), concatenated_image)
+    
+    
+
+def select_letter_samples_for_string(string, samples_by_char):
+    """
+    string : str
+        sentence generator로 생성한 문자열
+    samples_by_char : 
+    """
+    zero_image = torch.zeros((28, 28), dtype=torch.uint8)
+    sample_image_by_char = {}
+    
+    
+    # sample_by_char에 저장된 각 문자당 여러 이미지 중 하나를 골라 
+    # string에 해당하는 문자에 해당하는 이미지 매칭 (sample_image_by_char에 저장)
+    
+    for char in string:
+        if char in sample_image_by_char:
+            continue
+        
+        samples = samples_by_char[char]
+        sample = samples[np.random.choice(len(samples))] if samples else zero_image
+        sample_image_by_char[char] = sample.reshape(28, 28)
+        
+    return [sample_image_by_char[char] for char in string]
+
+
+    

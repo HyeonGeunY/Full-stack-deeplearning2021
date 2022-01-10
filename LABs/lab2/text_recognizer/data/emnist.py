@@ -80,7 +80,7 @@ class EMNIST(BaseDataModule):
                 base_dataset=data_trainval, fraction=TRAIN_FRAC, seed=42
             )
 
-        if stage == "test" or starge is None:
+        if stage == "test" or stage is None:
             with h5py.File(PROCESSED_DATA_DIRNAME, "r") as f:
                 self.x_test = f["x_test"][:]
                 self.y_test = f["y_test"][:].squeeze().astype(int)
@@ -139,6 +139,7 @@ def _process_raw_dataset(filename: str, dirname: Path):
     print("Loading training data from .mat file")
     data = loadmat("matlab/emnist-byclass.mat")
     # 클래스가 담겨있는 emnist_essentials.json 파일의 앞 4개는 토큰이므로 target에는 토큰 개수인 4만큼 더 해주어 클래스 시작 index와 맞춰준다.
+    # label에는 각 문자열의 아스키 코드가 담겨있다.
     x_train = data["dataset"]["train"][0, 0]["images"][0, 0].reshape(-1, 28, 28).swapaxes(1, 2)
     y_train = data["dataset"]["train"][0, 0]["labels"][0, 0] + NUM_SPECIAL_TOKENS
     x_test = data["dataset"]["test"][0, 0]["images"][0, 0].reshape(-1, 28, 28).swapaxes(1, 2)
