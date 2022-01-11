@@ -85,7 +85,7 @@ class EMNIST(BaseDataModule):
                 self.x_test = f["x_test"][:]
                 self.y_test = f["y_test"][:].squeeze().astype(int)
 
-            self.data_test = BaseDataModule(self.x_test, self.y_test, transforms=self.transform)
+            self.data_test = BaseDataset(self.x_test, self.y_test, transforms=self.transform)
 
     def __repr__(self):
         """[summary]
@@ -233,4 +233,5 @@ def _augment_emnist_characters(characters: Sequence[str]) -> Sequence[str]:
 
 
 if __name__ == "__main__":
+    #print(DL_DATA_DIRNAME)
     load_and_print_info(EMNIST)

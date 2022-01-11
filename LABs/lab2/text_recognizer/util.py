@@ -61,7 +61,7 @@ class TqdmUpTo(tqdm):
 
         if tsize is not None:
             self.total = tsize
-        self.update_to(blocks * bsize - self.n)
+        self.update(blocks * bsize - self.n)
 
 
 def download_url(url, filename):

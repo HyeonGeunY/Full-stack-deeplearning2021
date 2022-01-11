@@ -202,4 +202,8 @@ def select_letter_samples_for_string(string, samples_by_char):
     return [sample_image_by_char[char] for char in string]
 
 
+if __name__ == "__main__":
+    load_and_print_info(EMNISTLines)
+
+
     

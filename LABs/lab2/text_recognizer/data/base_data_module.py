@@ -8,7 +8,8 @@ from torch.utils.data import ConcatDataset, DataLoader
 
 from text_recognizer import util
 from text_recognizer.data.util import BaseDataset
-# %%
+
+
 def load_and_print_info(data_module_class) -> None:
     """
     EMNISTLines 로드 & info 출력
@@ -21,7 +22,6 @@ def load_and_print_info(data_module_class) -> None:
     dataset.setup()
     print(dataset)
     
-# %%
 
 def _download_raw_dataset(metadata: Dict, dl_dirname: Path) -> Path:
     dl_dirname.mkdir(parents=True, exist_ok=True)
@@ -36,10 +36,10 @@ def _download_raw_dataset(metadata: Dict, dl_dirname: Path) -> Path:
         raise ValueError("Download 한 파일의 SHA-256이 metadata document의 sha256과 맞지 않음")
     return filename
 
-# %%
+
 BATCH_SIZE = 128
 NUM_WORKERS = 0
-# %%
+
 class BaseDataModule(pl.LightningDataModule):
     """=
     Base DataModule.
