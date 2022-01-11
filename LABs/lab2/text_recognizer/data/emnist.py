@@ -51,7 +51,7 @@ class EMNIST(BaseDataModule):
             essentials = json.load(f)
 
         self.mapping = list(essentials["characters"])
-        self.inverse_mapping = {v: k for k, v in enumerate(self.mapping)}
+        self.inverse_mapping = {v: k for k, v in enumerate(self.mapping)} # chr : class
         self.transform = transforms.Compose([transforms.ToTensor()])
         self.dims = (1, *essentials["input_shape"])
         self.output_dims = (1,)
@@ -81,11 +81,11 @@ class EMNIST(BaseDataModule):
             )
 
         if stage == "test" or stage is None:
-            with h5py.File(PROCESSED_DATA_DIRNAME, "r") as f:
+            with h5py.File(PROCESSED_DATA_FILENAME, "r") as f:
                 self.x_test = f["x_test"][:]
                 self.y_test = f["y_test"][:].squeeze().astype(int)
 
-            self.data_test = BaseDataset(self.x_test, self.y_test, transforms=self.transform)
+            self.data_test = BaseDataset(self.x_test, self.y_test, transform=self.transform)
 
     def __repr__(self):
         """[summary]
@@ -233,5 +233,5 @@ def _augment_emnist_characters(characters: Sequence[str]) -> Sequence[str]:
 
 
 if __name__ == "__main__":
-    #print(DL_DATA_DIRNAME)
+    # print(DL_DATA_DIRNAME)
     load_and_print_info(EMNIST)
