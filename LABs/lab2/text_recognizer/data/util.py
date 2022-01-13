@@ -3,7 +3,8 @@
 from typing import Any, Callable, Dict, Sequence, Tuple, Union
 import torch
 
-SequeneOrTensor = Union[Sequence, torch.Tensor]
+SequenceOrTensor = Union[Sequence, torch.Tensor]
+
 class BaseDataset(torch.utils.data.Dataset):
     """
     Parameters
@@ -20,8 +21,8 @@ class BaseDataset(torch.utils.data.Dataset):
 
     def __init__(
         self,
-        data: SequeneOrTensor,
-        targets: SequeneOrTensor,
+        data: SequenceOrTensor,
+        targets: SequenceOrTensor,
         transform: Callable = None,
         target_transform: Callable = None,
     ) -> None:
