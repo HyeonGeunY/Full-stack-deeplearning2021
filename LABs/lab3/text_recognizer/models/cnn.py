@@ -34,7 +34,9 @@ class ConvBlock(nn.Module):
         skip_x = x
         c = self.conv(x)
         r = self.relu(c)
-        return r + skip_x  # 과제
+
+        return r
+        # return r + skip_x  # 과제
 
 
 class CNN(nn.Module):
