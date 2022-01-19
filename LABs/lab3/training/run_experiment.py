@@ -1,7 +1,8 @@
 """
 Experiment-running framework
 """
-
+import sys
+sys.path.append("..")
 import argparse
 import importlib
 
@@ -40,6 +41,7 @@ def _setup_parser():
     trainer_parser._action_groups[
         1
     ].title = "Trainer Args"  # optional argument의 titel을 Trainer Args로 바꿈 [0] : postioner, [1]: optioner, [2]: pl.Trainer (pl에서 생성한 flags)
+    # 위치 인자: 함수의 일반 변수 느낌, 순서에 영향 받음, 선택인자: 키워드 변수
     parser = argparse.ArgumentParser(
         add_help=False, parents=[trainer_parser]
     )  # pl.Trainer argparser의 모든 flag를 가지고 있는 parser 생성
