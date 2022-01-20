@@ -9,7 +9,7 @@ import torch.nn as nn
 from .cnn import CNN, IMAGE_SIZE
 
 WINDOW_WIDTH = 28
-WINDOW_SIRIDE = 28
+WINDOW_STRIDE = 28
 
 class LineCNNSimple(nn.Module):
     """LeNet based model that takes a line of width that is a multiple of CHAR_WIDTH"""
@@ -75,7 +75,7 @@ class LineCNNSimple(nn.Module):
         parser.add_argument(
             "--window_stride",
             type=int,
-            default=WINDOW_SIRIDE,
+            default=WINDOW_STRIDE,
             help="Stride of the window that will slide over the input image."
         )
         parser.add_argument("--limit_output_length", action="store_true", default=False)
