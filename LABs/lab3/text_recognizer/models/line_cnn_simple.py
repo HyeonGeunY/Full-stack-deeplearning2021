@@ -40,7 +40,7 @@ class LineCNNSimple(nn.Module):
         Returns
         ---------
         torch.Tensor
-            (B, C, S) logits, S: 시퀀스 길이(윈도우 개수), C: 클래스 수
+            (B, C, S) logits, S: 시퀀스 길이(윈도우 개수), C: 클래스 수 (문장 수)
             S는 W와 CHAR_WIDTH로부터 계산될 수 있음.
         """
         
