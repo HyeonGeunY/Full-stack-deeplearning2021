@@ -98,9 +98,9 @@ class CTCLitModel(BaseLitModel):
 
         decoded = self.greedy_decode(logprobs, max_length=y.shape[1])
         self.val_acc(decoded, y)
-        self.log("val_acc".self.val_acc, on_step=False, on_epoch=True)
+        self.log("val_acc", self.val_acc, on_step=False, on_epoch=True)
         self.val_cer(decoded, y)
-        self.log("val_cer".self.val_cer, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val_cer", self.val_cer, on_step=False, on_epoch=True, prog_bar=True)
 
     def test_step(self, batch, batch_idx):
         x, y = batch
@@ -108,7 +108,7 @@ class CTCLitModel(BaseLitModel):
         logprobs = torch.log_softmax(logits, dim=1)
         decoded = self.greedy_decode(logprobs, max_length=y.shape[1])
         self.test_acc(decoded, y)
-        self.log("text_acc", self.test_acc, on_step=False, on_epoch=True)
+        self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
         self.test_cer(decoded, y)
         self.log("test_cer", self.test_cer, on_step=False, on_epoch=True, prog_bar=True)
 
@@ -141,7 +141,7 @@ class CTCLitModel(BaseLitModel):
         for i in range(B):
             seq = [b for b, _g in itertools.groupby(argmax[i].tolist()) if b != self.blank_index][
                 :max_length
-            ]  # (?) itertools 쓰는 이유?
+            ]  # (?) itertools 쓰는 이유? => 공통된 인자 정리 
             for ii, char in enumerate(seq):
                 decoded[i, ii] = char
         return decoded
