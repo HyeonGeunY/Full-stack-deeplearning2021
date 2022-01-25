@@ -86,13 +86,13 @@ class BaseLitModel(pl.LightningModule):
             # one_cycle 정책을 사용하지 않는다면 고정된 lr을 갖는 optimizer 반환
             return optimizer
 
-        schedular = torch.optim.lr_scheduler.OnecycleLR(
+        scheduler = torch.optim.lr_scheduler.OnecycleLR(
             optimizer=optimizer,
             max_lr=self.one_cycle_max_lr,
             total_steps=self.one_cycle_total_steps,
         )
 
-        return {"optimizer": optimizer, "lr_scheduler": schedular, "monitor": "val_loss"}
+        return {"optimizer": optimizer, "lr_scheduler": scheduler, "monitor": "val_loss"}
 
     def forward(self, x):
         return self.model(x)
@@ -103,7 +103,7 @@ class BaseLitModel(pl.LightningModule):
         loss = self.loss_fn(logits, y.to(dtype=torch.long))
         self.log("train_loss", loss)
         self.train_acc(logits, y)
-        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
 
         return loss
 

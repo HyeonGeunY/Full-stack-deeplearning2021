@@ -111,7 +111,7 @@ class LineCNN(nn.Module):
         x = self.fc2(x) # (B, S, C)
         x = x.permute(0, 2, 1) # -> (B, C, S)
         if self.limit_output_length:
-            x = x[:, :, : self.output_length]
+            x = x[:, :, : self.output_length] # 최대 글자수 만큼 자름 (뒤 부분은 버린다.)
         return x
 
     @staticmethod

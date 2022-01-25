@@ -100,17 +100,17 @@ class BaseLitModel(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         logits = self(x) # forward 매소드 호출
-        loss = self.loss_fn(logits, y)
+        loss = self.loss_fn(logits, y.to(dtype=torch.long))
         self.log("train_loss", loss)
         self.train_acc(logits, y)
-        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
 
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         logits = self(x)
-        loss = self.loss_fn(logits, y)
+        loss = self.loss_fn(logits, y.to(dtype=torch.long))
         self.log("val_loss", loss, prog_bar=True)
         self.val_acc(logits, y)
         self.log("val_acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -118,5 +118,5 @@ class BaseLitModel(pl.LightningModule):
     def test_step(self, batch, batch_idx):
         x, y = batch
         logits = self(x)
-        self.test_acc(logits, y)
+        self.test_acc(logits, y.to(dtype=torch.long))
         self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)

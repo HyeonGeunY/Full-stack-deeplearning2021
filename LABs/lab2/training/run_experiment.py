@@ -1,7 +1,8 @@
 """
 Experiment-running framework
 """
-
+import sys
+sys.path.append('..')
 import argparse
 import importlib
 
@@ -117,7 +118,7 @@ def main():
 
     callbacks = [early_stopping_callback, model_checkpoint_callback]
 
-    args.weight_summary = "full"  # model의 전체 summary 출력
+    args.weights_summary = "full"  # model의 전체 summary 출력
 
     trainer = pl.Trainer.from_argparse_args(
         args, callbacks=callbacks, logger=logger, weights_save_path="training/logs"

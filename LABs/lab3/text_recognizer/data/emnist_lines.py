@@ -35,7 +35,7 @@ class EMNISTLines(BaseDataModule):
         )  # 텍스트에 해당하는 이미지를 조합할때 겹치는 정도의 최대 값
         self.max_overlap = self.args.get(
             "max_overlap", MAX_OVERLAP
-        )  # 텍스트에 해당하는 이미지를 조합할때 겹치는 정도의 최소 값
+        )  # 텍스트에 해당하는 이미지를 조합할때 겹치는 정도의 최소 값 
         self.num_train = self.args.get("num_train", NUM_TRAIN)
         self.num_val = self.args.get("num_val", NUM_VAL)
         self.num_test = self.args.get("num_test", NUM_TEST)

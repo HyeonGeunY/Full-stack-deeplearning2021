@@ -107,7 +107,7 @@ def main():
     )
 
     model_checkpoint_callback = pl.callbacks.ModelCheckpoint(
-        filename="{epochs:03d}-{val_loss:.3f}-{val_cer:.3f}", monitor="val_loss", mode="min"
+        filename="{epoch:03d}-{val_loss:.3f}-{val_cer:.3f}", monitor="val_loss", mode="min"
     )
     # filename
     # save any arbitrary metrics like `val_loss`, etc. in name
@@ -122,7 +122,7 @@ def main():
 
     callbacks = [early_stopping_callback, model_checkpoint_callback]
 
-    args.weight_summary = "full"  # model의 전체 summary 출력
+    args.weights_summary = "full"  # model의 전체 summary 출력
 
     trainer = pl.Trainer.from_argparse_args(
         args, callbacks=callbacks, logger=logger, weights_save_path="training/logs"
