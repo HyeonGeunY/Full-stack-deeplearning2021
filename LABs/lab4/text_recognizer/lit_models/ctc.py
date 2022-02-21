@@ -27,7 +27,6 @@ def compute_input_lengths(padded_sequence: torch.Tensor) -> torch.Tensor:
     tensor([2, 3, 5])
 
     """
-
     lengths = torch.arange(padded_sequence.shape[1]).type_as(padded_sequence)
     return ((padded_sequence > 0) * lengths).argmax(1) + 1
 

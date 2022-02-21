@@ -92,6 +92,9 @@ def main():
         
     if args.loss == "ctc":
         lit_model_class = lit_models.CTCLitModel
+    
+    if args.loss == "transformer":
+        lit_model_class = lit_models.TransformerLitModel
 
     if args.load_checkpoint is not None:  # 기존 model를 load해서 사용할 떄
         lit_model = lit_model_class.load_from_checkpoint(

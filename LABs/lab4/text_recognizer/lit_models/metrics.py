@@ -34,7 +34,7 @@ def test_character_error_rate():
     test 코드 0, 1 은 문장 시작, 끝 => ignore_tokens
     '''
     metric = CharacterErrorRate([0, 1])
-    X = torch.Tensor(
+    X = torch.tensor(
         [
             [0, 2, 2, 3, 3, 1],
             [0, 2, 1, 1, 1, 1],

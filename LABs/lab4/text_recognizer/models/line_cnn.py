@@ -49,7 +49,7 @@ class LineCNN(nn.Module):
 
         self.output_length = data_config["output_dims"][0]
         
-        _C, H, W = data_config["input_dims"]
+        _C, H, _W = data_config["input_dims"]
         conv_dim = self.args.get("conv_dim", CONV_DIM)
         fc_dim = self.args.get("fc_dim", FC_DIM)
         self.WW = self.args.get("window_width", WINDOW_WIDTH)
@@ -65,9 +65,7 @@ class LineCNN(nn.Module):
             ConvBlock(conv_dim * 2, conv_dim * 2),
             ConvBlock(conv_dim * 2, conv_dim * 4, stride=2),
             ConvBlock(conv_dim * 4, conv_dim * 4),
-            ConvBlock(conv_dim * 4, fc_dim, kernel_size=(H // 8, self.WW // 8), stride=(H // 8, self.WS // 8), padding=0),
-        )
-        
+            ConvBlock(conv_dim * 4, fc_dim, kernel_size=(H // 8, self.WW // 8), stride=(H // 8, self.WS // 8), padding=0),)
         self.fc1 = nn.Linear(fc_dim, fc_dim)
         self.dropout = nn.Dropout(0.2)
         self.fc2 = nn.Linear(fc_dim, self.num_classes)
