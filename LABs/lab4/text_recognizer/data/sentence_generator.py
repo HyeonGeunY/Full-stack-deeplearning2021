@@ -18,7 +18,7 @@ class SentenceGenerator:
 
     def __init__(self, max_length: Optional[int] = None):
         self.text = brown_text()
-        self.word_starts_inds = [0] + [
+        self.word_start_inds = [0] + [
             _.start(0) + 1 for _ in re.finditer(" ", self.text)
         ]  # " " 기준 다음 글자를 받음 => 문자열 시작 지점을 받는다. [0] : 첫 문자열
         self.max_length = max_length
@@ -35,15 +35,15 @@ class SentenceGenerator:
 
         for _ in range(10):  # 에러 출력 전 여러번 시도하도록 설정
             try:
-                first_ind = np.random.randint(0, len(self.word_starts_inds) - 1)
-                start_ind = self.word_starts_inds[first_ind]
+                first_ind = np.random.randint(0, len(self.word_start_inds) - 1)
+                start_ind = self.word_start_inds[first_ind]
                 end_ind_candidates = []
                 for ind in range(
-                    first_ind + 1, len(self.word_starts_inds)
+                    first_ind + 1, len(self.word_start_inds)
                 ):  # max_length가 될 때 까지 end_ind 리스트에 추가
-                    if self.word_starts_inds[ind] - start_ind > max_length:
+                    if self.word_start_inds[ind] - start_ind > max_length:
                         break
-                    end_ind_candidates.append(self.word_starts_inds[ind])  # end 후보군 저장
+                    end_ind_candidates.append(self.word_start_inds[ind])  # end 후보군 저장
                 end_ind = np.random.choice(end_ind_candidates)  # end 후보군 중에서 random choice
                 sampled_text = self.text[start_ind:end_ind].strip()  # 좌우 공백 제거하거
                 return sampled_text
