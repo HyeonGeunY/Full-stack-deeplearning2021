@@ -4,7 +4,7 @@ import torch
 import torchmetrics
 
 OPTIMIZER = "Adam"
-LR = 1e-3
+LR = 1e-5
 LOSS = "cross_entropy"
 ONE_CYCLE_TOTAL_STEPS = 100
 
@@ -14,17 +14,17 @@ class Accuracy(torchmetrics.Accuracy):
     Accuracy metrics with a hack
     """
 
-    # def update(self, preds: torch.Tensor, target: torch.Tensor) -> None:
-    #     """
-    #     pytorchlightning 1.2+ 기준 probability 값이 0~1 범위를 벗어나는 버그 존재
+    def update(self, preds: torch.Tensor, target: torch.Tensor) -> None:
+        """
+        pytorchlightning 1.2+ 기준 probability 값이 0~1 범위를 벗어나는 버그 존재
 
-    #     preds를 받기 전에 normalize를 해주어 해결
-    #         - 예측 결과는 max 확률이 중요함으로 값의 순위만 바뀌지 않는다면 문제 x
-    #     """
+        preds를 받기 전에 normalize를 해주어 해결
+            - 예측 결과는 max 확률이 중요함으로 값의 순위만 바뀌지 않는다면 문제 x
+        """
 
-    #     if preds.min() < 0 or preds.max() > 1:
-    #         preds = torch.nn.functional.softmax(preds, dim=-1)
-    #     super().update(preds=preds, target=target)
+        if preds.min() < 0 or preds.max() > 1:
+            preds = torch.nn.functional.softmax(preds, dim=-1)
+        super().update(preds=preds, target=target)
 
 
 class BaseLitModel(pl.LightningModule):
@@ -63,6 +63,7 @@ class BaseLitModel(pl.LightningModule):
         )
         parser.add_argument("--lr", type=float, default=LR)
         parser.add_argument("--one_cycle_max_lr", type=float, default=None)
+        parser.add_argument("--one_cycle_total_steps", type=int, default=ONE_CYCLE_TOTAL_STEPS)
         parser.add_argument(
             "--loss", type=str, default=LOSS, help="loss function from torch.nn.functional"
         )

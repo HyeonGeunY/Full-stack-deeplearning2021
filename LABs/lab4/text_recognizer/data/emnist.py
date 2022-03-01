@@ -16,7 +16,7 @@ import toml  # toml 형식으로 작성된 파이썬 패키지 다운
 from text_recognizer.data.base_data_module import (
     _download_raw_dataset,
     BaseDataModule,
-    load_and_print_info,
+    load_and_print_info
 )
 from text_recognizer.data.util import BaseDataset, split_dataset
 
@@ -105,7 +105,7 @@ class EMNIST(BaseDataModule):
 
         x, y = next(iter(self.train_dataloader()))
         data = (
-            f"Train/val/test sizes: {len(self.data_train), {len(self.data_val)}, {len(self.data_test)}}\n"
+            f"Train/val/test sizes: {len(self.data_train)}, {len(self.data_val)}, {len(self.data_test)}\n"
             f"Batch x stats: {(x.shape, x.dtype, x.min(), x.mean(), x.std(), x.max())}\n"
             f"Batch y stats: {(y.shape, y.dtype, y.min(), y.max())}\n"
         )
@@ -151,7 +151,7 @@ def _process_raw_dataset(filename: str, dirname: Path):
         x_train, y_train = _sample_to_balance(x_train, y_train)
         x_test, y_test = _sample_to_balance(x_test, y_test)
 
-    print("Saving to HDFS in a compressed format...")
+    print("Saving to HDF5 in a compressed format...")
     PROCESSED_DATA_DIRNAME.mkdir(parents=True, exist_ok=True)
     with h5py.File(PROCESSED_DATA_FILENAME, "w") as f:
         # dtype u1 : 넘파이 자료형

@@ -92,5 +92,5 @@ class CNN(nn.Module):
     @staticmethod
     def add_to_argparse(parser):
         parser.add_argument("--conv_dim", type=int, default=CONV_DIM)
-        parser.add_argument("--fc_dim", type=int, default=CONV_DIM)
+        parser.add_argument("--fc_dim", type=int, default=FC_DIM)
         return parser

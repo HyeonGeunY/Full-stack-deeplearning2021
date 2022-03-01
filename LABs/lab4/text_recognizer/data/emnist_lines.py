@@ -13,7 +13,7 @@ from text_recognizer.data.base_data_module import BaseDataModule, load_and_print
 from text_recognizer.data.emnist import EMNIST
 
 DATA_DIRNAME = BaseDataModule.data_dirname() / "processed" / "emnist_lines"
-ESSENTIALS_FILENAME = Path(__file__).parents[0].resolve() / "emnist_lines_essenetials.json"
+ESSENTIALS_FILENAME = Path(__file__).parents[0].resolve() / "emnist_lines_essentials.json"
 
 MAX_LENGTH = 32
 MIN_OVERLAP = 0
@@ -132,7 +132,7 @@ class EMNISTLines(BaseDataModule):
         return basic + data
 
     def _generate_data(self, split: str) -> None:
-        print(f"EMNINSTLinesDataset generating data for {split}...")
+        print(f"EMNISTLinesDataset generating data for {split}...")
 
         from text_recognizer.data.sentence_generator import SentenceGenerator
 
@@ -167,7 +167,7 @@ class EMNISTLines(BaseDataModule):
                 sentence_generator,
                 self.min_overlap,
                 self.max_overlap,
-                self.dims,
+                self.dims
             )  # x에는 문장에 해당하는 이미지, y는 문장
 
             y = convert_strings_to_labels(
@@ -186,52 +186,6 @@ def get_samples_by_char(samples, labels, mapping):
     for sample, label in zip(samples, labels):
         samples_by_char[mapping[label]].append(sample)
     return samples_by_char
-
-
-def create_dataset_of_images(
-    N, samples_by_char, sentence_generator, min_overlap, max_overlap, dims
-):
-    """
-    N : 데이터 개수
-    samples_by_char : Dict[key, images]
-        key 문자에 해당하는 여러 image가 들어있음.
-
-    return
-    -------
-    문장(문자열)에 해당하는 image들과 labels(문장)들 문자 -> 문장으로 확장
-
-    """
-    images = torch.zeros((N, dims[1], dims[2]))
-    labels = []
-    for n in range(N):
-        label = sentence_generator.generate()
-        images[n] = construct_image_from_string(
-            label, samples_by_char, min_overlap, max_overlap, dims[-1]
-        )
-        labels.append(label)
-    return images, labels
-
-
-def construct_image_from_string(
-    string: str, samples_by_char: dict, min_overlap: float, max_overlap: float, width: int
-) -> torch.Tensor:
-    """
-    min_overlap ~ max_overlap 사이의 랜덤한 overlap 설정
-    select_letter_samples_for_string 함수에서 string에 맞는 이미지 샘플들을 가져옴 -> sampled_images
-    overlap을 고려하여 이미지 붙인 후 반환
-    """
-
-    overlap = np.random.uniform(min_overlap, max_overlap)
-    sampled_images = select_letter_samples_for_string(string, samples_by_char)
-    H, W = sampled_images[0].shape
-    next_overlap_width = W - int((overlap * W))
-    concatenated_image = torch.zeros((H, width), dtype=torch.uint8)
-    x = 0
-    for image in sampled_images:
-        concatenated_image[:, x : (x + W)] += image
-        x += next_overlap_width
-    return torch.minimum(torch.Tensor([255]), concatenated_image)
-
 
 def select_letter_samples_for_string(string, samples_by_char):
     """
@@ -258,6 +212,51 @@ def select_letter_samples_for_string(string, samples_by_char):
         sample_image_by_char[char] = sample.reshape(28, 28)
 
     return [sample_image_by_char[char] for char in string]
+
+
+def construct_image_from_string(
+    string: str, samples_by_char: dict, min_overlap: float, max_overlap: float, width: int
+) -> torch.Tensor:
+    """
+    min_overlap ~ max_overlap 사이의 랜덤한 overlap 설정
+    select_letter_samples_for_string 함수에서 string에 맞는 이미지 샘플들을 가져옴 -> sampled_images
+    overlap을 고려하여 이미지 붙인 후 반환
+    """
+
+    overlap = np.random.uniform(min_overlap, max_overlap)
+    sampled_images = select_letter_samples_for_string(string, samples_by_char)
+    H, W = sampled_images[0].shape
+    next_overlap_width = W - int(overlap * W)
+    concatenated_image = torch.zeros((H, width), dtype=torch.uint8)
+    x = 0
+    for image in sampled_images:
+        concatenated_image[:, x : (x + W)] += image
+        x += next_overlap_width
+    return torch.minimum(torch.Tensor([255]), concatenated_image)
+
+
+def create_dataset_of_images(
+    N, samples_by_char, sentence_generator, min_overlap, max_overlap, dims
+):
+    """
+    N : 데이터 개수
+    samples_by_char : Dict[key, images]
+        key 문자에 해당하는 여러 image가 들어있음.
+
+    return
+    -------
+    문장(문자열)에 해당하는 image들과 labels(문장)들 문자 -> 문장으로 확장
+
+    """
+    images = torch.zeros((N, dims[1], dims[2]))
+    labels = []
+    for n in range(N):
+        label = sentence_generator.generate()
+        images[n] = construct_image_from_string(
+            label, samples_by_char, min_overlap, max_overlap, dims[-1]
+        )
+        labels.append(label)
+    return images, labels
 
 
 def convert_strings_to_labels(
