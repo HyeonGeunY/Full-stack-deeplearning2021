@@ -19,7 +19,7 @@ from text_recognizer import util
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-PROCESSED_DATA_DIRNAME =  BaseDataModule.data_dirname() / "processed" / "iam_lines"
+PROCESSED_DATA_DIRNAME = BaseDataModule.data_dirname() / "processed" / "iam_lines"
 TRAIN_FRAC = 0.8
 IMAGE_HEIGHT = 56
 IMAGE_WIDTH = 2048
@@ -31,7 +31,7 @@ class IAMLines(BaseDataModule):
     
     def __init__(self, args: argparse.Namespace = None):
         super().__init__(args)
-        self.augment = self.args.get("argument_data", "true") == "true"
+        self.augment = self.args.get("augment_data", "true") == "true"
         self.mapping = EMNIST().mapping
         self.inverse_mapping = {v: k for k, v in enumerate(self.mapping)}
         self.dims = (1, IMAGE_HEIGHT, IMAGE_WIDTH)
@@ -40,7 +40,7 @@ class IAMLines(BaseDataModule):
     @staticmethod
     def add_to_argparse(parser):
         BaseDataModule.add_to_argparse(parser)
-        parser.add_argument("--argument_data", type=str, default="true")
+        parser.add_argument("--augment_data", type=str, default="true")
         return parser
     
     def prepare_data(self, *args, **kwargs) -> None:
@@ -166,7 +166,7 @@ def get_transform(image_width, augment=False):
         new_crop_width = int(new_crop_height * (crop_width / crop_height))
         if augment:
             new_crop_width = int(new_crop_width * random.uniform(0.9, 1.1))
-            new_crop_height = min(new_crop_width, image_width)
+            new_crop_width = min(new_crop_width, image_width)
         crop_resized = crop.resize((new_crop_width, new_crop_height), resample=Image.BILINEAR) #interpolation
         
         # Embed in the image
@@ -181,7 +181,7 @@ def get_transform(image_width, augment=False):
     if augment:
         transforms_list += [
             transforms.ColorJitter(brightness=(0.8, 1.6)),
-            transforms.RandomAffine(degrees=1, shear=(-30, 20), resample=Image.BILINEAR, fillcolor=0)
+            transforms.RandomAffine(degrees=1, shear=(-30, 20), resample=Image.BILINEAR, fillcolor=0),
         ]
     transforms_list.append(transforms.ToTensor())
     return transforms.Compose(transforms_list)

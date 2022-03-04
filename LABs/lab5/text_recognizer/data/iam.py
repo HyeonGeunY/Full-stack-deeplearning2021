@@ -125,7 +125,7 @@ def _get_line_region_from_xml_element(xml_line) -> Dict[str, int]:
         "x1": min(x1s) // DOWNSAMPLE_FACTOR - LINE_REGION_PADDING,
         "y1": min(y1s) // DOWNSAMPLE_FACTOR - LINE_REGION_PADDING,
         "x2": max(x2s) // DOWNSAMPLE_FACTOR + LINE_REGION_PADDING,
-        "y2": max(y2s) // DOWNSAMPLE_FACTOR + LINE_REGION_PADDING
+        "y2": max(y2s) // DOWNSAMPLE_FACTOR + LINE_REGION_PADDING,
     }
     
 

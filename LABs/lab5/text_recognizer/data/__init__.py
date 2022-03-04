@@ -3,6 +3,8 @@ from .base_data_module import BaseDataModule
 from .mnist import MNIST
 from .emnist import EMNIST
 from .emnist_lines import EMNISTLines
+from .iam import IAM
+from .iam_lines import IAMLines
 
 # __iit__.py 파일을 만들면서 해당 디렉토리를 패키지로 만든다.
 # __init__.py 파일에 from .util import BaseDataset과 같은 구문을 넣음으로써 중간 모듈 이름을 생략할 수 있다.
