@@ -118,7 +118,7 @@ def _get_line_region_from_xml_element(xml_line) -> Dict[str, int]:
     x2s = [int(el.attrib["x"]) + int(el.attrib["width"]) for el in word_elements]
     y2s = [int(el.attrib["y"]) + int(el.attrib["height"]) for el in word_elements]
     
-    # 이미지 내 문장의 글자가 존재하는 영역 반환
+    # 이미지 내 문장(line)의 글자가 존재하는 영역 반환
     # downsample_factor : 메모리 절약을 위해 이미지 크기 줄인 것을 반영
     # line_region_padding : 패딩영역
     return {
