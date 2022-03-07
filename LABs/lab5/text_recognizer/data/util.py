@@ -66,20 +66,20 @@ class BaseDataset(torch.utils.data.Dataset):
 
 
 def convert_strings_to_labels(
-    strings: Sequence[str], mapping: Dict[str, int], length: int
-) -> torch.Tensor:
+    strings: Sequence[str], mapping: Dict[str, int], length: int) -> torch.Tensor:
+    
     """
     Convert
 
     역할 파악하고 다시 적기
-    len(strings)와 length 차이?
-    len(strings) 입력받은 단어들의 개수
-    length : 단어 최대길이?
+    len(strings)와 length 차이 => len(strings) : batch size, length: 문장 최대 길이
+    len(strings) 입력받은 문장들의 개수
 
     Convert sequence of N strings to a (N, length) ndarray, with each string wrapped with <S> and <E> tokens,
-    and padded with the <P> token.
-
+    and padded with the <P> token. 
+    
     """
+    
     labels = torch.ones((len(strings), length), dtype=torch.long) * mapping["<P>"]
 
     for i, string in enumerate(strings):
