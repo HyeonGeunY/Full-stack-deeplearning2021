@@ -165,7 +165,8 @@ def _process_raw_dataset(filename: str, dirname: Path):
     # k : class number (in jason), v : 아스키 코드
     mapping = {
         int(k): chr(v) for k, v in data["dataset"]["mapping"][0, 0]
-    }  # chr(v) 아스키 코드 -> 문자 변환
+    }  # chr(v) 아스키 코드 -> 문자 변환,
+    #mapping : 숫자 -> 문자
     characters = _augment_emnist_characters(list(mapping.values()))
     essentials = {"characters": characters, "input_shape": list(x_train.shape[1:])}
 

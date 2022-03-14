@@ -1,8 +1,12 @@
+if "__file__" in globals():
+    import os, sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+
 """
 Experiment-running framework
 """
-import sys
-sys.path.append("..")
+# import sys
+# sys.path.append("..")
 import argparse
 import importlib
 
@@ -13,8 +17,8 @@ import wandb
 
 from text_recognizer import lit_models
 
-np.random.seed(42)
-torch.manual_seed(42)
+np.random.seed(22)
+torch.manual_seed(22)
 
 
 def _import_class(module_and_class_name: str) -> type:
@@ -47,6 +51,7 @@ def _setup_parser():
     )  # pl.Trainer argparser의 모든 flag를 가지고 있는 parser 생성
 
     # Basic arguments
+    parser.add_argument("--wandb", action="store_true", default=False)
     parser.add_argument("--data_class", type=str, default="MNIST")
     parser.add_argument("--model_class", type=str, default="MLP")
     parser.add_argument("--load_checkpoint", type=str, default=None)
@@ -104,14 +109,19 @@ def main():
         lit_model = lit_model_class(args=args, model=model)
 
     logger = pl.loggers.TensorBoardLogger("training/logs")
+    
+    if args.wandb:
+        logger = pl.loggers.WandbLogger()
+        logger.watch(model)
+        logger.log_hyperparams(vars(args))
 
     early_stopping_callback = pl.callbacks.EarlyStopping(
         monitor="val_loss", mode="min", patience=10
     )
-
     model_checkpoint_callback = pl.callbacks.ModelCheckpoint(
         filename="{epoch:03d}-{val_loss:.3f}-{val_cer:.3f}", monitor="val_loss", mode="min"
     )
+    
     # filename
     # save any arbitrary metrics like `val_loss`, etc. in name
     # saves a file like: my/path/epoch=2-val_loss=0.02-other_metric=0.03.ckpt
@@ -142,7 +152,14 @@ def main():
 
     trainer.fit(lit_model, datamodule=data)
     trainer.test(lit_model, datamodule=data)
-
+    
+    best_model_path = model_checkpoint_callback.best_model_path
+    if best_model_path:
+        print(f"Best model saved at: {best_model_path}")
+        if args.wandb:
+            wandb.save(best_model_path)
+            print("Best model also uploaded to W&B")
+    
 
 if __name__ == "__main__":
     main()

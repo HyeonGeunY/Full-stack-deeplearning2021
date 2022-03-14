@@ -75,9 +75,8 @@ class CTCLitModel(BaseLitModel):
 
         logprobs_for_loss = logprobs.permute(2, 0, 1)  # -> (S, B, C)
 
-        input_lengths = (
-            torch.ones(B).type_as(logprobs_for_loss).int() * S
-        )  # .int() torch.int32 로 변환
+        input_lengths = torch.ones(B).type_as(logprobs_for_loss).int() * S
+          # .int() torch.int32 로 변환
         target_lengths = first_element(y, self.padding_index).type_as(y)
         loss = self.loss_fn(logprobs_for_loss, y, input_lengths, target_lengths)
         self.log("train_loss", loss)

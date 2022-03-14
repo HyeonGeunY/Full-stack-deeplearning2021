@@ -1,8 +1,12 @@
+# if "__file__" in globals():
+#     import os, sys
+#     sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+
 """
 Experiment-running framework
 """
 import sys
-sys.path.append("..")
+sys.path.append('..')
 import argparse
 import importlib
 

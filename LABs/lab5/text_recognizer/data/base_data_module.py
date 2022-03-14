@@ -108,7 +108,7 @@ class BaseDataModule(pl.LightningDataModule):
 
     def train_dataloader(self):
         return DataLoader(
-            self.data_train,  # self.data_train 어디?
+            self.data_train,  
             shuffle=True,
             batch_size=self.batch_size,
             num_workers=self.num_workers,

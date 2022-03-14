@@ -61,7 +61,7 @@ def brown_text():
     sents = load_nltk_brown_corpus()  # brown nltk vk파일 읽기
     text = " ".join(itertools.chain.from_iterable(sents))
     text = text.translate({ord(c): None for c in string.punctuation})  # !? 같은 문자 제거
-    text = re.sub(" +", " ", text)  # 두개 이상의 공백을 한개로 바꿈
+    text = re.sub("  +", " ", text)  # 두개 이상의 공백을 한개로 바꿈
     return text
 
 

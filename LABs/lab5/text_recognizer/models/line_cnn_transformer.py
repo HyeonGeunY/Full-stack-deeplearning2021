@@ -96,7 +96,7 @@ class LineCNNTransformer(nn.Module):
         
         y_padding_mask = y == self.padding_token
         y = y.permute(1, 0) # (Sy, B)
-        y = self.embedding(y.to(dtype=torch.long)) * math.sqrt(self.dim) # (Sy, B, E)
+        y = self.embedding(y) * math.sqrt(self.dim) # (Sy, B, E)
         y = self.pos_encoder(y) 
         Sy = y.shape[0]
         y_mask = self.y_mask[:Sy, :Sy].type_as(x)

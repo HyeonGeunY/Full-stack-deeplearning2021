@@ -41,7 +41,7 @@ class EMNISTLines2(BaseDataModule):
         self.max_length = self.args.get("max_length", MAX_LENGTH)
         self.min_overlap = self.args.get("min_overlap", MIN_OVERLAP)
         self.max_overlap = self.args.get("max_overlap", MAX_OVERLAP)
-        self.num_train = self.args.get("num_val", NUM_TRAIN)
+        self.num_train = self.args.get("num_train", NUM_TRAIN)
         self.num_val = self.args.get("num_val", NUM_VAL)
         self.num_test = self.args.get("num_test", NUM_TEST)
         
@@ -54,7 +54,7 @@ class EMNISTLines2(BaseDataModule):
         self.dims = (
             self.emnist.dims[0],
             IMAGE_HEIGHT,
-            IMAGE_WIDTH
+            IMAGE_WIDTH,
         )
         assert self.max_length <= MAX_OUTPUT_LENGTH
         self.output_dims = (MAX_OUTPUT_LENGTH, 1)

@@ -53,7 +53,7 @@ class IAMLines(BaseDataModule):
         crops_trainval, labels_trainval = line_crops_and_labels(iam, "trainval")
         crops_test, labels_test = line_crops_and_labels(iam, "test")
         
-        shapes = np.array([crop.size for crop in crops_trainval + crops_test])
+        shapes = np.array([crop.size for crop in crops_trainval + crops_test]) # crop: PIL.Image, .size => width, height 반환
         aspect_ratios = shapes[:, 0] / shapes[:, 1]
         
         print("Saving images, labels and statistics...")
@@ -117,6 +117,13 @@ class IAMLines(BaseDataModule):
     
                     
 def line_crops_and_labels(iam: IAM, split: str):
+    """
+    이미지 내 문장 토큰 -> labels, 문장 영역 -> crops에 담아서 반환 (좌표값으로 자름)
+    Parameters
+    -----------
+    split: str
+        train, val, test 
+    """
     crops = []
     labels = []
     for filename in iam.form_filenames:

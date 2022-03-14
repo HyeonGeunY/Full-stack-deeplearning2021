@@ -38,7 +38,9 @@ class BaseDataset(torch.utils.data.Dataset):
         self.target_transform = target_transform
 
     def __len__(self) -> int:
-        """data 길이 반환"""
+        """
+        data 길이 반환
+        """
         return len(self.data)
 
     def __getitem__(self, index: int) -> Tuple[Any, Any]:
@@ -60,7 +62,7 @@ class BaseDataset(torch.utils.data.Dataset):
             datum = self.transform(datum)
 
         if self.target_transform is not None:
-            target = self.target_transform
+            target = self.target_transform(target)
 
         return datum, target
 

@@ -4,10 +4,10 @@ import torch
 import torchmetrics
 
 OPTIMIZER = "Adam"
-LR = 1e-5
+LR = 1e-3
 LOSS = "cross_entropy"
 ONE_CYCLE_TOTAL_STEPS = 100
-
+ 
 
 class Accuracy(torchmetrics.Accuracy):
     """
@@ -87,7 +87,7 @@ class BaseLitModel(pl.LightningModule):
             # one_cycle 정책을 사용하지 않는다면 고정된 lr을 갖는 optimizer 반환
             return optimizer
 
-        scheduler = torch.optim.lr_scheduler.OnecycleLR(
+        scheduler = torch.optim.lr_scheduler.OneCycleLR(
             optimizer=optimizer,
             max_lr=self.one_cycle_max_lr,
             total_steps=self.one_cycle_total_steps,

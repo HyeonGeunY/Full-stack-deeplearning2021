@@ -116,7 +116,7 @@ class LineCNN(nn.Module):
     def add_to_argparse(parser):
         parser.add_argument("--conv_dim", type=int, default=CONV_DIM)
         parser.add_argument("--fc_dim", type=int, default=FC_DIM)
-        parser.add_argument("--window_width", type=int, default=WINDOW_WIDTH, help="Width of the window that will slide over the input shape")
+        parser.add_argument("--window_width", type=int, default=WINDOW_WIDTH, help="Width of the window that will slide over the input image")
         parser.add_argument("--window_stride", type=int, default=WINDOW_STRIDE, help="Stride of the window that will slide over the input image.")
         parser.add_argument("--limit_output_length", action="store_true", default=False)
         return parser
