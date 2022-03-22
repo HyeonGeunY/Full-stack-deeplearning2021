@@ -1,0 +1,5 @@
+[default]
+entity = hgyoon0928
+project = Full-stack-deeplearning-LABs_lab5_training
+base_url = https://api.wandb.ai
+
