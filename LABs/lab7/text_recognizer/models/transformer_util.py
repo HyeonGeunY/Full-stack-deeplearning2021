@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 
-class PositionalEncoding(torch.nn.Module):
+class PositionalEncodingImage(torch.nn.Module):
     """
     encoder로 부터 생성된 feature-map에 추가하는 2-D positional encoding
     
