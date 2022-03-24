@@ -19,7 +19,6 @@ class IAMOriginalAndSyntheticParagraphs(BaseDataModule):
         
         self.dims = self.iam_paragraphs.dims
         self.output_dims = self.iam_paragraphs.output_dims
-        
         self.mapping = self.iam_paragraphs.mapping
         self.inverse_mapping = {v: k for k, v in enumerate(self.mapping)}
         
@@ -40,7 +39,9 @@ class IAMOriginalAndSyntheticParagraphs(BaseDataModule):
         # 원본 데이터와 합성데이터를 합쳐서 train 데이터를 만든다.
         self.data_train = ConcatDataset([self.iam_paragraphs.data_train, self.iam_syn_paragraphs.data_train])
         self.data_val = self.iam_paragraphs.data_val
-        self.data_test = self.iam_paragraphs.data_test
+        
+        if stage == 'test' or stage is None:
+            self.data_test = self.iam_paragraphs.data_test
         
     def __repr__(self) -> str:
         """Print info about the dataset."""

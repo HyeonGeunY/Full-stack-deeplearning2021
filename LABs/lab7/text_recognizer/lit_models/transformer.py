@@ -48,7 +48,7 @@ class TransformerLitModel(BaseLitModel):
         loss = self.loss_fn(logits, y[:, 1:].to(dtype=torch.long))
         self.log("val_loss", loss, prog_bar=True)
 
-        pred = self.model.predict(x)
+        pred = self.model.predict(x)  
         
         pred_str = "".join(self.mapping[_] for _ in pred[0].tolist() if _ != 3)
         try:

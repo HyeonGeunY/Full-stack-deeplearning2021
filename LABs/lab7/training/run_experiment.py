@@ -24,12 +24,18 @@ torch.manual_seed(22)
 def _import_class(module_and_class_name: str) -> type:
     """
     Import class from a module, e.g, 'text_recognizer.models.MLP'
+    
+    모듈로 부터 클래스를 임포트 한다.
+    모듈 이름과 클래스 이름을 .을 구분으로 하여 입력으로 받은 후 str.rsplit을 이용하여 모듈과 클래스를 분리하여 사용한다.
+    importlib을 이용하여 모듈을 임포트 한 후 getattr을 사용하여 클래스를 받는다.
     """
 
     module_name, class_name = module_and_class_name.rsplit(
         ".", 1
     )  # rsplit : "." 기준으로 오른쪽부터 두번째 인자 숫자 만큼 나눔 if 0 -> 나누지 않음.
 
+    # module_name: text_recognizer.models
+    # class_name: MLP
     module = importlib.import_module(module_name)
     class_ = getattr(module, class_name)
 
@@ -39,12 +45,12 @@ def _import_class(module_and_class_name: str) -> type:
 def _setup_parser():
     """data, model, trainer, etc 관련 argument에 대한 파이썬 Argumentparser setup"""
 
-    parser = argparse.ArgumentParser(add_help=False)
+    parser = argparse.ArgumentParser(add_help=False) # parser를 만든다.
     # --max_epochs, --gpus, --precision과 같은 trainer argument
-    trainer_parser = pl.Trainer.add_argparse_args(parser)
+    trainer_parser = pl.Trainer.add_argparse_args(parser) # pytorch lightning에 있는 parser를 가진 parser를 반환한다.
     trainer_parser._action_groups[
         1
-    ].title = "Trainer Args"  # optional argument의 titel을 Trainer Args로 바꿈 [0] : postioner, [1]: optioner, [2]: pl.Trainer (pl에서 생성한 flags)
+    ].title = "Trainer Args"  # optional argument의 title을 Trainer Args로 바꿈 [0] : postioner, [1]: optioner, [2]: pl.Trainer (pl에서 생성한 flags)
     # 위치 인자: 함수의 일반 변수 느낌, 순서에 영향 받음, 선택인자: 키워드 변수
     parser = argparse.ArgumentParser(
         add_help=False, parents=[trainer_parser]
@@ -84,6 +90,23 @@ def main():
     '''
     python training/run_experiment.py --max_epochs=3 --gpus='0' --num_workers=20 --model_class=MLP --data_class=MNIST
     '''
+    
+    _setup_parser를 통해 parser를 받은 후 parse_args()를 이용해 터미널로부터 인자를 전달 받음.
+    원하는 loss에 맞게 litmodel 설정.
+    
+    기존 모델에서 load or 새로 만들기.
+    
+    wandb 설정.
+    
+    callbacks 설정
+    
+    pl.Trainer.from_argparse_args()로 args, callbacks, logge, weights_save_path를 전달하여 Traniner 생성
+    
+    trainer.tune을 이용하여 lit_model(loss)와 data 인스턴스전달 (datamodule)
+    
+    trainer.fit(lit_model, datamodule=data) 이용하여 훈련
+    trainer.test(lit_model, datamodule=data) 이용하여 테스트
+    
     """
     parser = _setup_parser()
     args = parser.parse_args()
@@ -140,6 +163,7 @@ def main():
     trainer = pl.Trainer.from_argparse_args(
         args, callbacks=callbacks, logger=logger, weights_save_path="training/logs"
     )
+    # weights_save_path에 logger저장
     # argparse 로 전달해도 되고, callback 등 인자로 전달해도 된다.
 
     # 각 trainer method에 맞춰서 train_loader, valid_loader, test_loader를 넣어주어도 되지만

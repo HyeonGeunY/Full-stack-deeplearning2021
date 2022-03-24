@@ -181,11 +181,11 @@ class ResnetTransformer(nn.Module):
         output_tokens = (torch.ones((B, S)) * self.padding_token).type_as(x).long()  # (B, S)
         output_tokens[:, 0] = self.start_token  # Set start token
         
-        for Sy in range(1, S):
+        for Sy in range(1, S): 
             y = output_tokens[:, :Sy]  # (B, Sy)
             output = self.decode(x, y)  # (Sy, B, C) C: class(문자) 별 확률 
             output = torch.argmax(output, dim=-1)  # (Sy, B) 확률이 제일 큰 인덱스 추출
-            output_tokens[:, Sy : Sy + 1] = output[-1:]  # Set the last output token
+            output_tokens[:, Sy : Sy + 1] = output[-1:].unsqueeze(-1)  # Set the last output token
             
             # 배치 내의 모든 토큰이 end이거나 padding이면 루프 탈출
             if ((output_tokens[:, Sy] == self.end_token) | (output_tokens[:, Sy] == self.padding_token)).all():
