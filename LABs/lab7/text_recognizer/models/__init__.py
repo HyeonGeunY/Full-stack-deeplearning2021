@@ -9,3 +9,4 @@ from .line_cnn_lstm import LineCNNLSTM
 from .line_cnn_transformer import LineCNNTransformer
 
 from .resnet_transformer import ResnetTransformer
+from .resnet_transformer_source import ResnetTransformer_source
