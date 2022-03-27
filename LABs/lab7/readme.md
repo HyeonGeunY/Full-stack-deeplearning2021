@@ -24,6 +24,12 @@ wandb sweep training/sweeps/IAMparagraphs_resnet_transformer.yml
 wandb sweep training/sweeps/emnist_lines2_line_cnn_transformer.yml
 ```
 
+용량이 큰 파일은 github에 그대로 업로드, 다운로드 되지 않는다.
+git-lfs를 인스톨 하면 자동으로 관리된다.
+```sh
+sudo apt install git-lfs
+```
+
 
 # Error
 ## AttributeError: 'IAMParagraphs' object has no attribute 'data_test'
