@@ -1,7 +1,9 @@
 # Install exact Python and CUDA versions
+conda-create:
+	conda env create -f environment.yml
+
 conda-update:
-	#conda env update --prune -f test_env.yml
-	conda env create -f test_env.yml
+	conda env update --prune -f environment.yml
 	# echo "!!!RUN RIGHT NOW:\nconda activate fsdl-text-recognizer-2021"
 
 # Compile and install exact pip packages
@@ -10,7 +12,8 @@ pip-tools:
 	pip-compile requirements/prod.in && pip-compile requirements/dev.in
 	
 	# install requirements for dev
-	pip-sync --user requirements/prod.txt requirements/dev.txt # not use in virtual env
+	# python -m piptools sync requirements/prod.txt requirements/dev.txt
+	# pip install -r requirements/prod.txt && pip install -r requirements/dev.txt
 	# install requirements for prod
 	# pip-sync
 

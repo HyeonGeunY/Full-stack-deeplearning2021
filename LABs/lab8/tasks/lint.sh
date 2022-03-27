@@ -8,10 +8,10 @@ echo "safety (failure is tolerated)"
 FILE=requirements/prod.txt
 if [ -f "$FILE" ]; then
     # We're in the main repo
-    safety check -r requirements/prod.txt -r requirements/dev.txt
+    safety check -r wins/requirements/prod.txt -r wins/requirements/dev.txt
 else
     # We're in the labs repo
-    safety check -r ../requirements/prod.txt -r ../requirements/dev.txt
+    safety check -r ../wins/requirements/prod.txt -r ../wins/requirements/dev.txt
 fi
 
 echo "pylint"

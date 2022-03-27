@@ -1,7 +1,7 @@
 """IAM paragraph dataset class"""
 import sys
 
-sys.path.append("../..")
+#sys.path.append("../..")
 import argparse
 from pathlib import Path
 from typing import Dict, Optional, Sequence, Tuple
