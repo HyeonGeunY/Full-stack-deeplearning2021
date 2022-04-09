@@ -13,7 +13,7 @@ IAM 데이터셋을 사용하여 IAM_lines, IAM_pragraphs, IAM_synthetic_paragra
 ```sh
 python training/run_experiment.py --wandb --gpus=-1 --data_class=IAMOriginalAndSyntheticParagraphs --model_class=ResnetTransformer --loss=transformer --batch_size=16 --check_val_every_n_epoch=10 --terminate_on_nan=1 --num_workers=24 --accelerator=ddp --lr=0.0001 --accumulate_grad_batches=4
 ```
-
+ 
 
 아래 명령어로 sweep을 통해 확습 시킨다.
 ```sh
